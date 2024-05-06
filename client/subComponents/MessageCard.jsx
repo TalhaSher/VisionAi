@@ -1,11 +1,13 @@
 import React from "react";
 import { Avatar } from "@mui/material";
 import { Box, useMediaQuery, Typography } from "@mui/material";
+import ReactMarkdown from "react-markdown";
 
-const MessageCard = ({ role, message }) => {
+const MessageCard = ({ role, message, type }) => {
   const isHuman = role === "human";
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const width = isNonMobile ? "100%" : "90%";
+  const isLoading = type === "loading";
   return (
     <>
       <Box display="flex" flexDirection="row" width="90%" margin="0.6rem 0">
@@ -26,9 +28,15 @@ const MessageCard = ({ role, message }) => {
             alignItems: "center",
           }}
         >
-          <Typography sx={{ fontWeight: "light", marginLeft: "1rem" }}>
-            {message}
-          </Typography>
+          {isLoading ? (
+            <Typography sx={{ fontWeight: "light", marginLeft: "1rem" }}>
+              {message}
+            </Typography>
+          ) : (
+            <Typography sx={{ fontWeight: "light", marginLeft: "1rem" }}>
+              <ReactMarkdown>{message}</ReactMarkdown>
+            </Typography>
+          )}
         </Box>
       </Box>
     </>
