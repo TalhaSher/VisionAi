@@ -26,13 +26,14 @@ const MainComponent = () => {
   const [chat, setChat] = useState([
     {
       user: "human",
-      message: "Get a famous inspirational quote",
-      response: "You cannot find peace by avoiding life' - Virginia Woolf.",
+      message: "Get a quote",
+      response: "Believe you can and you're halfway there. - Talha Sher.",
     },
   ]);
 
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [history, setHistory] = useState([]);
 
   /* FORM SUBMISSION HANDLER*/
 
@@ -46,13 +47,21 @@ const MainComponent = () => {
 
     const prompt = input;
 
-    axios.post("/", { prompt }, headers).then((res) => {
+    setHistory((prev) => [
+      ...prev,
+      { role: "user", parts: [{ text: prompt }] },
+    ]);
+
+    axios.post("/", { prompt, history }, headers).then((res) => {
       let ai = {
         user: "human",
         message: prompt,
         response: res.data,
       };
-      console.log(ai);
+      setHistory((prev) => [
+        ...prev,
+        { role: "model", parts: [{ text: res.data }] },
+      ]);
       setChat((prev) => [...prev, ai]);
       setIsLoading(false);
     });
@@ -67,7 +76,7 @@ const MainComponent = () => {
 
   const skeleton = (
     <>
-      <Box sx={{ width: isNonMobile ? "120vh" : "100vh" }}>
+      <Box sx={{ width: isNonMobile ? "120vh" : "28vh" }}>
         <Skeleton />
         <Skeleton />
         <Skeleton />
@@ -80,7 +89,7 @@ const MainComponent = () => {
     if (paperRef.current) {
       paperRef.current.scrollTop = paperRef.current.scrollHeight;
     }
-  }, [chat]);
+  }, [chat, isLoading]);
 
   return (
     <>

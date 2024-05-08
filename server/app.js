@@ -24,11 +24,13 @@ app.use(
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 /* A basic function */
-const generate = async (userPrompt) => {
+const generate = async (userPrompt, chatHistory) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    const chat = model.startChat();
+    const chat = model.startChat({
+      history: chatHistory,
+    });
 
     const msg = `${userPrompt}`;
 
@@ -55,7 +57,9 @@ app.get("/", async (req, res) => {
 
 app.post("/", async (req, res) => {
   try {
-    const result = await generate(`${req.body.prompt}`);
+    const prompt = req.body.prompt;
+    const history = req.body.history;
+    const result = await generate(prompt, history);
     res.status(200).json(result);
   } catch (error) {
     res.status("500").json({ error: error.message });
