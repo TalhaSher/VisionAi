@@ -47,11 +47,6 @@ const MainComponent = () => {
 
     const prompt = input;
 
-    setHistory((prev) => [
-      ...prev,
-      { role: "user", parts: [{ text: prompt }] },
-    ]);
-
     axios.post("/", { prompt, history }, headers).then((res) => {
       let ai = {
         user: "human",
@@ -60,6 +55,7 @@ const MainComponent = () => {
       };
       setHistory((prev) => [
         ...prev,
+        { role: "user", parts: [{ text: prompt }] },
         { role: "model", parts: [{ text: res.data }] },
       ]);
       setChat((prev) => [...prev, ai]);
@@ -164,6 +160,7 @@ const MainComponent = () => {
                       backgroundColor: "black",
                     }}
                     type="submit"
+                    disabled={isLoading}
                   >
                     send
                   </Button>
