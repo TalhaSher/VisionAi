@@ -1,1 +1,1 @@
-MERN stack ai chatbot.
+MERN stack ai chatbot using gemini api.
